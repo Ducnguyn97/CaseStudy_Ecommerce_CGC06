@@ -22,15 +22,15 @@ public class Product {
     private double price;
     @Column(nullable = true)
     private String imageUrl;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<OrderDetail> orderDetails;
     @Column(nullable = false)
-    private String stock;
+    private Integer stock;
 
-    public Product(String name, double price, String imageUrl, Category category, String stock) {
+    public Product(String name, double price, String imageUrl, Category category, Integer stock) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;

@@ -19,16 +19,18 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
+
     private LocalDateTime orderDate;
     @Column(nullable = false)
+
     private double totalAmount;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+
     private User user;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderDetail> orderDetails;
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String status;
 
     public Order(LocalDateTime orderDate, double totalAmount, User user, String status) {

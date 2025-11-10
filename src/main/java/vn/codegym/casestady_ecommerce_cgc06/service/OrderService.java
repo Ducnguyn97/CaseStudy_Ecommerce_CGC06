@@ -85,7 +85,7 @@ public class OrderService {
             // Tính tổng tiền
             totalAmount += product.getPrice() * item.getQuantity();
             
-            // Cập nhật stock (nếu cần)
+            // Cập nhật stock
             if (product.getStock() != null) {
                 int currentStock = product.getStock();
                 int newStock = currentStock - item.getQuantity();

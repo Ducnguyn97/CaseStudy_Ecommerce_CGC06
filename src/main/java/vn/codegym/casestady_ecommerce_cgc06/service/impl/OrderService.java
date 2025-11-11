@@ -1,4 +1,4 @@
-package vn.codegym.casestady_ecommerce_cgc06.service;
+package vn.codegym.casestady_ecommerce_cgc06.service.impl;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,43 +1,48 @@
 package vn.codegym.casestady_ecommerce_cgc06.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Table(name = "products")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = true)
+
+    @Column(nullable = false)
     private String name;
-    @Column(nullable = true)
-    private int quantity;
-    @Column(nullable = true)
+
+    @Column(nullable = false)
     private double price;
-    @Column(nullable = true)
-    private String description;
+
     @Column(nullable = true)
     private String imageUrl;
-    @Column(nullable = true)
-    private String category;
-    @ManyToMany
-    @JoinTable(
-            name = "order_products",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "order_id")
-    )
-    private java.util.List<Order> orders;
 
-    public Product(String name, int quantity, double price, String description, String imageUrl, String category) {
-        this.name = name;
-        this.quantity = quantity;
-        this.price = price;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.category = category;
-    }
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnoreProperties("products")
+    private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<OrderDetail> orderDetails;
+
+    @Column(nullable = false)
+    private String stock;
+
+    // Một sản phẩm có nhiều ảnh
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Image> images;
+
+
 }

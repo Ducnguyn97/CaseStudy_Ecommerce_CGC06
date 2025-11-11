@@ -22,7 +22,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
-//@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*")
 public class ProductController {
 
     @Value("${file.upload-dir}")
@@ -112,7 +112,7 @@ public class ProductController {
 
         Path target = uploadPath.resolve(filename).normalize();
         Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
-        return "/img/" + filename; // ✅ trỏ đúng folder static/img
+        return "/api/img/" + filename; // ✅ trỏ đúng folder static/img
     }
 
     // ✅ Cập nhật

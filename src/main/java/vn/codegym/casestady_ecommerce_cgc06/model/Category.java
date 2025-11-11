@@ -14,12 +14,10 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 100)
     private String name;
-
-    @OneToMany(mappedBy = "category")
-    @JsonIgnoreProperties("category")
-    @JsonIgnore
+    @Column(length = 500)
+    private String description;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Product> products;
 }

@@ -3,11 +3,16 @@ package vn.codegym.casestady_ecommerce_cgc06.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderItemRequest {
+    @NotNull (message = "Product ID is required")
     private Long productId;
+    @Min(value = 1, message = "Quantity must be greater than 0")
     private Integer quantity;
 }

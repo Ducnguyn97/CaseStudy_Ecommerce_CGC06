@@ -15,10 +15,14 @@ public class CaseStadyEcommerceCgc06Application {
         SpringApplication.run(CaseStadyEcommerceCgc06Application.class, args);
     }
 
+//    @Bean
+//    public BCryptPasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+
     @Bean
     CommandLineRunner init(UserRepository userRepository, BCryptPasswordEncoder encoder) {
         return args -> {
-            // Tạo admin nếu chưa có
             if (userRepository.findByUsername("admin").isEmpty()) {
                 User admin = new User(
                         "admin",
@@ -29,10 +33,8 @@ public class CaseStadyEcommerceCgc06Application {
                         "ROLE_ADMIN"
                 );
                 userRepository.save(admin);
-                System.out.println("✅ Admin account created: admin / 123456");
+                System.out.println("✅ Admin created: admin / 123456");
             }
-
-            // Tạo user nếu chưa có
             if (userRepository.findByUsername("user").isEmpty()) {
                 User user = new User(
                         "user",
@@ -43,7 +45,7 @@ public class CaseStadyEcommerceCgc06Application {
                         "ROLE_USER"
                 );
                 userRepository.save(user);
-                System.out.println("✅ User account created: user / 123456");
+                System.out.println("✅ User created: user / 123456");
             }
         };
     }

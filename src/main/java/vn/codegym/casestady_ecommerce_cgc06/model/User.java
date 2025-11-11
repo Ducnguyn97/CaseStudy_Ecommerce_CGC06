@@ -1,6 +1,7 @@
 package vn.codegym.casestady_ecommerce_cgc06.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

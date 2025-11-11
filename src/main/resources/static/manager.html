@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | MiniStore</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        body { font-family: 'Lato', sans-serif; background-color: #f4f7f9; margin:0; }
+        .container { display: flex; height: 100vh; }
+        .sidebar {
+            width: 220px; background: #343a40; color: #fff; padding: 20px; flex-shrink: 0;
+        }
+        .sidebar h3 { color: #fff; font-size: 1.4rem; margin-bottom: 20px; }
+        .sidebar button {
+            display: block; width: 100%; margin-bottom: 10px;
+            background: #495057; color: #fff; border: none; padding: 12px; border-radius: 5px;
+            text-align: left;
+        }
+        .sidebar button:hover { background: #6c757d; cursor: pointer; }
+        .content { flex: 1; padding: 20px; overflow-y: auto; background: #f8f9fa; }
+        table { width: 100%; background: #fff; border-radius: 5px; overflow: hidden; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #007bff; color: white; }
+        .btn-sm { font-size: 0.8rem; padding: 5px 10px; margin-right: 5px; }
+        .form-inline input, .form-inline button { margin-right: 5px; margin-bottom: 5px; }
+        .form-inline input { padding: 5px 8px; border-radius: 5px; border: 1px solid #ccc; }
+        .form-inline button { padding: 5px 12px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h4>QUẢN LÝ BÁN HÀNG</h4>
+        <button id="btnUsers">Người Dùng</button>
+        <button id="btnProducts">Sản Phẩm</button>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div id="contentArea"></div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    const contentArea = $("#contentArea");
+
+    // -------------------- USER CRUD --------------------
+    function loadUsers() {
+        contentArea.html("<h4>Loading users...</h4>");
+        $.get("http://localhost:8080/api/users", function(users) {
+            let html = `<h4>Users</h4>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th><th>Username</th><th>Email</th><th>Phone</th><th>Address</th><th>Role</th><th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>`;
+            users.forEach(u => {
+                html += `<tr>
+                <td>${u.id}</td>
+                <td>${u.username}</td>
+                <td>${u.email}</td>
+                <td>${u.phoneNumber}</td>
+                <td>${u.address}</td>
+                <td>${u.role}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editUser(${u.id})">Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id})">Delete</button>
+                </td>
+            </tr>`;
+            });
+            html += "</tbody></table>";
+            contentArea.html(html);
+        });
+    }
+
+    function deleteUser(id) {
+        if(confirm("Bạn có chắc muốn xóa user này?")) {
+            $.ajax({
+                url: `http://localhost:8080/api/users/${id}`,
+                type: "DELETE",
+                success: function(res) { alert(res); loadUsers(); },
+                error: function(xhr) { alert(xhr.responseText); }
+            });
+        }
+    }
+
+    function editUser(id) {
+        $.get(`http://localhost:8080/api/users/${id}`, function(u) {
+            const username = prompt("Username:", u.username);
+            const email = prompt("Email:", u.email);
+            const phone = prompt("Phone:", u.phoneNumber);
+            const address = prompt("Address:", u.address);
+            const password = prompt("Password (để trống nếu không đổi):", "");
+
+            if(username && email && phone && address){
+                $.ajax({
+                    url: `http://localhost:8080/api/users/${id}`,
+                    type: "PUT",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        username, email, phoneNumber: phone, address, password
+                    }),
+                    success: function(res){ alert(res); loadUsers(); },
+                    error: function(xhr){ alert(xhr.responseText); }
+                });
+            }
+        });
+    }
+
+    // -------------------- PRODUCT CRUD --------------------
+    function loadProducts() {
+        contentArea.html("<h4>Loading products...</h4>");
+        $.get("http://localhost:8080/api/products", function(products) {
+            let html = `<h4>Products</h4>
+            <form id="addProductForm" class="form-inline mb-3">
+                <input type="text" id="prodName" placeholder="Name" required>
+                <input type="number" id="prodPrice" placeholder="Price" required>
+                <input type="text" id="prodDesc" placeholder="Description" required>
+                <button type="submit" class="btn btn-success btn-sm">Add</button>
+            </form>
+            <table class="table">
+            <thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Description</th><th>Actions</th></tr></thead>
+            <tbody>`;
+            products.forEach(p => {
+                html += `<tr>
+                <td>${p.id}</td>
+                <td>${p.name}</td>
+                <td>${p.price}</td>
+                <td>${p.description}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editProduct(${p.id}, '${p.name}', ${p.price}, '${p.description}')">Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">Delete</button>
+                </td>
+            </tr>`;
+            });
+            html += "</tbody></table>";
+            contentArea.html(html);
+
+            $("#addProductForm").submit(function(e){
+                e.preventDefault();
+                const prod = {
+                    name: $("#prodName").val(),
+                    price: parseFloat($("#prodPrice").val()),
+                    description: $("#prodDesc").val()
+                };
+                $.ajax({
+                    url: "http://localhost:8080/api/products",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(prod),
+                    success: function(res){ alert(res); loadProducts(); },
+                    error: function(xhr){ alert(xhr.responseText); }
+                });
+            });
+        });
+    }
+
+    function deleteProduct(id) {
+        if(confirm("Bạn có chắc muốn xóa product này?")) {
+            $.ajax({
+                url: `http://localhost:8080/api/products/${id}`,
+                type: "DELETE",
+                success: function(res){ alert(res); loadProducts(); },
+                error: function(xhr){ alert(xhr.responseText); }
+            });
+        }
+    }
+
+    function editProduct(id, name, price, desc) {
+        const newName = prompt("Tên mới:", name);
+        const newPrice = parseFloat(prompt("Giá mới:", price));
+        const newDesc = prompt("Mô tả mới:", desc);
+        if(newName && !isNaN(newPrice) && newDesc){
+            $.ajax({
+                url: `http://localhost:8080/api/products/${id}`,
+                type: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify({ name: newName, price: newPrice, description: newDesc }),
+                success: function(res){ alert(res); loadProducts(); },
+                error: function(xhr){ alert(xhr.responseText); }
+            });
+        }
+    }
+
+    // -------------------- Event binding --------------------
+    $("#btnUsers").click(loadUsers);
+    $("#btnProducts").click(loadProducts);
+
+    // Load default view
+    loadUsers();
+</script>
+</body>
+</html>

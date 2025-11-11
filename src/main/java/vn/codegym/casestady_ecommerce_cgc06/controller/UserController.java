@@ -1,11 +1,13 @@
 package vn.codegym.casestady_ecommerce_cgc06.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.codegym.casestady_ecommerce_cgc06.model.User;
 import vn.codegym.casestady_ecommerce_cgc06.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import vn.codegym.casestady_ecommerce_cgc06.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,68 +21,72 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private BCryptPasswordEncoder encoder;
+    private BCryptPasswordEncoder passwordEncoder;
 
-    //  Lấy tất cả user
+    @Autowired
+    private UserService userService;
+
+    // Lấy tất cả user
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return ResponseEntity.ok(users);
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
-    //   Lấy user theo id
+    // Lấy 1 user theo id
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        if(user.isEmpty()) return ResponseEntity.status(404).body("User not found");
         return ResponseEntity.ok(user.get());
     }
 
-    //  Tạo user mới
+    // Tạo user mới (đăng ký admin không cho)
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().build(); // username đã tồn tại
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+        if(userRepository.existsByUsername(user.getUsername())) {
+            return ResponseEntity.status(400).body("Username đã tồn tại");
         }
-        // Mã hóa password trước khi lưu
-        user.setPassword(encoder.encode(user.getPassword()));
-        User savedUser = userRepository.save(user);
-        return ResponseEntity.ok(savedUser);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole("ROLE_USER"); // chỉ tạo role user
+        userRepository.save(user);
+        return ResponseEntity.ok("User created successfully");
     }
 
-    //  Cập nhật user
+    // Cập nhật user
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        Optional<User> existingUserOpt = userRepository.findById(id);
-        if (existingUserOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User newUser) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isEmpty()) return ResponseEntity.status(404).body("User not found");
+
+        User user = optionalUser.get();
+        user.setUsername(newUser.getUsername());
+        user.setEmail(newUser.getEmail());
+        user.setPhoneNumber(newUser.getPhoneNumber());
+        user.setAddress(newUser.getAddress());
+        if(newUser.getPassword() != null && !newUser.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         }
-
-        User existingUser = existingUserOpt.get();
-        existingUser.setUsername(updatedUser.getUsername());
-        existingUser.setEmail(updatedUser.getEmail());
-        existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
-        existingUser.setAddress(updatedUser.getAddress());
-        existingUser.setRole(updatedUser.getRole());
-
-        // Nếu có cập nhật password thì mã hóa lại
-        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
-            existingUser.setPassword(encoder.encode(updatedUser.getPassword()));
-        }
-
-        userRepository.save(existingUser);
-        return ResponseEntity.ok(existingUser);
+        userRepository.save(user);
+        return ResponseEntity.ok("User updated successfully");
     }
 
-    //  Xóa user
+    // Xóa user
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        if (userRepository.findById(id).isEmpty()) {
-            return ResponseEntity.notFound().build();
+        if(userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+            return ResponseEntity.ok("User deleted successfully");
+        } else {
+            return ResponseEntity.status(404).body("User not found");
         }
-        userRepository.deleteById(id);
-        return ResponseEntity.ok("User deleted successfully!");
+    }
+    //Tìm kiếm và phân trang
+    @GetMapping("/search")
+    public Page<User> searchUsers(
+            @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "5") int size
+    ) {
+        return userService.searchUsers(keyword, page, size);
     }
 }

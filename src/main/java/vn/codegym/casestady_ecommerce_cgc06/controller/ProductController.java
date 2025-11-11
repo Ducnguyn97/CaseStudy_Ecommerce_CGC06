@@ -20,9 +20,9 @@ import java.nio.file.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/products")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class ProductController {
 
     @Value("${file.upload-dir}")
@@ -54,7 +54,7 @@ public class ProductController {
     public ResponseEntity<Product> addProduct(
             @RequestParam("name") String name,
             @RequestParam("price") Double price,
-            @RequestParam("stock") String stock,
+            @RequestParam("stock") Integer stock,
             @RequestParam("categoryId") Long categoryId,
             @RequestParam(value = "images", required = false) MultipartFile[] images
     ) throws IOException {

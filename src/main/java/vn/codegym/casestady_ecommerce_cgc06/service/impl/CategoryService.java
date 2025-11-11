@@ -3,7 +3,7 @@ package vn.codegym.casestady_ecommerce_cgc06.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.codegym.casestady_ecommerce_cgc06.model.Category;
-import vn.codegym.casestady_ecommerce_cgc06.repository.CategoryRepository;
+import vn.codegym.casestady_ecommerce_cgc06.repository.ICategoryRepository;
 import vn.codegym.casestady_ecommerce_cgc06.service.ICategoryService;
 
 import java.util.Optional;
@@ -11,25 +11,25 @@ import java.util.Optional;
 @Service
 public class CategoryService implements ICategoryService {
     @Autowired
-    private CategoryRepository categoryRepository;
+    private ICategoryRepository ICategoryRepository;
 
     @Override
     public Iterable<Category> findAll() {
-        return categoryRepository.findAll();
+        return ICategoryRepository.findAll();
     }
 
     @Override
     public Optional<Category> findById(Long id) {
-        return categoryRepository.findById(id);
+        return ICategoryRepository.findById(id);
     }
 
     @Override
     public Category save(Category category) {
-        return categoryRepository.save(category);
+        return ICategoryRepository.save(category);
     }
 
     @Override
     public void remove(Long id) {
-        categoryRepository.deleteById(id);
+        ICategoryRepository.deleteById(id);
     }
 }

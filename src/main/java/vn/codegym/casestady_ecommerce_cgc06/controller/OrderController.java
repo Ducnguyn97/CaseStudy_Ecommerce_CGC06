@@ -8,7 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import vn.codegym.casestady_ecommerce_cgc06.dto.OrderItemRequest;
 import vn.codegym.casestady_ecommerce_cgc06.model.Order;
-import vn.codegym.casestady_ecommerce_cgc06.service.OrderService;
+import vn.codegym.casestady_ecommerce_cgc06.service.impl.OrderService;
 
 import java.util.List;
 

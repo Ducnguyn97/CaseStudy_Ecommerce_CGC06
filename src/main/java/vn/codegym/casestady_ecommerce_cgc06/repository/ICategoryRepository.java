@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import vn.codegym.casestady_ecommerce_cgc06.model.Category;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category,Long> {
+public interface ICategoryRepository extends JpaRepository<Category,Long> {
 }

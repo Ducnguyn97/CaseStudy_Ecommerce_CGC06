@@ -37,7 +37,7 @@ public class Product {
     private List<OrderDetail> orderDetails;
 
     @Column(nullable = false)
-    private String stock;
+    private Integer stock;
 
     // Một sản phẩm có nhiều ảnh
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)

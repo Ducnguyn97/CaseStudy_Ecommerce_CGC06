@@ -112,7 +112,7 @@ public class ProductController {
 
         Path target = uploadPath.resolve(filename).normalize();
         Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
-        return "/api/img/" + filename; // ✅ trỏ đúng folder static/img
+        return "/images/" + filename; // ✅ trỏ đúng folder static/img
     }
 
     // ✅ Cập nhật

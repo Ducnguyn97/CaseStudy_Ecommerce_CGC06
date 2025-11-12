@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import vn.codegym.casestady_ecommerce_cgc06.model.User;
 import vn.codegym.casestady_ecommerce_cgc06.repository.UserRepository;
@@ -15,10 +16,10 @@ public class CaseStadyEcommerceCgc06Application {
         SpringApplication.run(CaseStadyEcommerceCgc06Application.class, args);
     }
 
-//    @Bean
-//    public BCryptPasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     CommandLineRunner init(UserRepository userRepository, BCryptPasswordEncoder encoder) {

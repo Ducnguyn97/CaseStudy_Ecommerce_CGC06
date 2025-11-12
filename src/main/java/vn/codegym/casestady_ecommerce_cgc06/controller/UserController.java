@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin("*") // Cho phép test từ Postman hoặc frontend
+@CrossOrigin(origins = "http://localhost:63342") // Cho phép test từ Postman hoặc frontend
 public class UserController {
 
     @Autowired

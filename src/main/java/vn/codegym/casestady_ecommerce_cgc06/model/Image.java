@@ -1,12 +1,14 @@
 package vn.codegym.casestady_ecommerce_cgc06.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Table(name = "images")
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Image {
 
     @Id

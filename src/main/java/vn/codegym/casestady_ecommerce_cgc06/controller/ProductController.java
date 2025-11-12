@@ -23,7 +23,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:63342")
 public class ProductController {
 
     @Value("${file.upload-dir}")
@@ -117,7 +117,6 @@ public class ProductController {
                 .path("/images/")
                 .path(filename)
                 .toUriString();
-
     }
 
     // ✅ Cập nhật

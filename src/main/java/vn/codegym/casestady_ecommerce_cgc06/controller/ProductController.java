@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import vn.codegym.casestady_ecommerce_cgc06.model.Category;
 import vn.codegym.casestady_ecommerce_cgc06.model.Image;
 import vn.codegym.casestady_ecommerce_cgc06.model.Product;
@@ -22,7 +23,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
-//@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*")
 public class ProductController {
 
     @Value("${file.upload-dir}")
@@ -112,7 +113,11 @@ public class ProductController {
 
         Path target = uploadPath.resolve(filename).normalize();
         Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
-        return "/img/" + filename; // ✅ trỏ đúng folder static/img
+        return ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/images/")
+                .path(filename)
+                .toUriString();
+
     }
 
     // ✅ Cập nhật

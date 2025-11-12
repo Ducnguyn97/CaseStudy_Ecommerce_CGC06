@@ -34,7 +34,7 @@ public class WebConfig implements WebMvcConfigurer {
         // Map /img/** tới thư mục trên ổ đĩa
         String location = Paths.get(uploadDir).toAbsolutePath().normalize().toUri().toString();
         // location sẽ có dạng file:/D:/ecommerce-uploads/
-        registry.addResourceHandler("/img/**")
+        registry.addResourceHandler("/images/**")
                 .addResourceLocations(location)
                 .setCachePeriod(3600);
     }

@@ -19,34 +19,34 @@ public class CaseStadyEcommerceCgc06Application {
 //    public BCryptPasswordEncoder passwordEncoder() {
 //        return new BCryptPasswordEncoder();
 //    }
-
-    @Bean
-    CommandLineRunner init(UserRepository userRepository, BCryptPasswordEncoder encoder) {
-        return args -> {
-            if (userRepository.findByUsername("admin").isEmpty()) {
-                User admin = new User(
-                        "admin",
-                        encoder.encode("123456"),
-                        "admin@gmail.com",
-                        "0123456789",
-                        "Hà Nội",
-                        "ROLE_ADMIN"
-                );
-                userRepository.save(admin);
-                System.out.println("✅ Admin created: admin / 123456");
-            }
-            if (userRepository.findByUsername("user").isEmpty()) {
-                User user = new User(
-                        "user",
-                        encoder.encode("123456"),
-                        "user@gmail.com",
-                        "0987654321",
-                        "Hồ Chí Minh",
-                        "ROLE_USER"
-                );
-                userRepository.save(user);
-                System.out.println("✅ User created: user / 123456");
-            }
-        };
-    }
+//
+//    @Bean
+//    CommandLineRunner init(UserRepository userRepository, BCryptPasswordEncoder encoder) {
+//        return args -> {
+//            if (userRepository.findByUsername("admin").isEmpty()) {
+//                User admin = new User(
+//                        "admin",
+//                        encoder.encode("123456"),
+//                        "admin@gmail.com",
+//                        "0123456789",
+//                        "Hà Nội",
+//                        "ROLE_ADMIN"
+//                );
+//                userRepository.save(admin);
+//                System.out.println("✅ Admin created: admin / 123456");
+//            }
+//            if (userRepository.findByUsername("user").isEmpty()) {
+//                User user = new User(
+//                        "user",
+//                        encoder.encode("123456"),
+//                        "user@gmail.com",
+//                        "0987654321",
+//                        "Hồ Chí Minh",
+//                        "ROLE_USER"
+//                );
+//                userRepository.save(user);
+//                System.out.println("✅ User created: user / 123456");
+//            }
+//        };
+//    }
 }

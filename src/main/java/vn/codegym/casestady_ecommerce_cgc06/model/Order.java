@@ -33,7 +33,7 @@ public class Order {
     @Column(nullable = false, length = 20)
     private String status;
 
-    public Order(LocalDateTime orderDate, double totalAmount, User user, OrderStatus status) {
+    public Order(LocalDateTime orderDate, double totalAmount, User user, String status) {
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
         this.user = user;
